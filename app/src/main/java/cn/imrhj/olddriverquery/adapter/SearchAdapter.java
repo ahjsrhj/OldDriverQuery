@@ -59,6 +59,9 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (userBase.getBitmap() != null) {
             h.ivSeAvatar.setImageBitmap(userBase.getBitmap());
         } else {
+            if (userBase.getAreaId() > 28) {
+                KLog.e(": " + userBase.getNameAndLevel());
+            }
             HttpMethods.getInstance().getUserIcon(userBase.getAvaterId(), new Subscriber<Bitmap>() {
                 @Override
                 public void onCompleted() {

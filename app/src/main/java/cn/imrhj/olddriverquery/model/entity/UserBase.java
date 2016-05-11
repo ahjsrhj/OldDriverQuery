@@ -1,9 +1,11 @@
 package cn.imrhj.olddriverquery.model.entity;
 
+import com.socks.library.KLog;
+
 /**
  * Created by rhj on 16/5/6.
  */
-public class UserBase {
+public class UserBase implements Comparable<UserBase> {
 
     /**
      * area_id : 14
@@ -87,5 +89,11 @@ public class UserBase {
 
     public void setWin_point(int win_point) {
         this.win_point = win_point;
+    }
+
+    @Override
+    public int compareTo(UserBase another) {
+        KLog.d(": sort" + this.getArea_id() + this.getName() + " | " + another.getArea_id() + another.getName());
+        return  another.getArea_id() - this.getArea_id();
     }
 }

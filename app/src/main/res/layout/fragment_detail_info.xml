@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginLeft="@dimen/activity_vertical_margin"
+    android:layout_marginRight="@dimen/activity_vertical_margin"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/iv_detail_fragment_avatar"
+                android:src="@drawable/profileicon4"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="9dp"
+                app:riv_corner_radius="90dp" />
+
+            <TextView
+                android:id="@+id/tv_detail_fragment_level"
+                android:text="Lv 30"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimaryText"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="14dp"
+                android:layout_toRightOf="@+id/iv_detail_fragment_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="战斗力"
+                android:layout_below="@+id/tv_detail_fragment_level"
+                android:layout_toRightOf="@+id/iv_detail_fragment_avatar"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_detail_fragment_zhandouli"
+                android:text="3188"
+                android:textSize="22sp"
+                android:textColor="@color/colorPrimaryText"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/iv_detail_fragment_avatar"
+                android:layout_toRightOf="@+id/iv_detail_fragment_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_detail_fragment_record"
+                android:text="经典模式（176）（46.6%）\n人机对战（166）（96.4%）\n大乱斗（108）（47.2%）"
+                android:textSize="12sp"
+                android:layout_toLeftOf="@+id/iv_detail_fragment_star"
+                android:layout_marginRight="2dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <ImageView
+                android:id="@+id/iv_detail_fragment_star"
+                android:src="@drawable/ic_star_border"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:layout_width="35dp"
+                android:layout_height="35dp" />
+
+
+            <TextView
+                android:id="@+id/tv_detail_fragment_good"
+                android:text="179"
+                android:textColor="@android:color/holo_red_light"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <ImageView
+                android:src="@drawable/ic_thumb_up"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/tv_detail_fragment_good"
+                android:layout_marginBottom="5dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp" />
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_fragment_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+
+
+</LinearLayout>

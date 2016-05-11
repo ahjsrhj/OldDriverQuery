@@ -11,6 +11,7 @@ import java.util.List;
 
 import cn.imrhj.olddriverquery.App;
 import cn.imrhj.olddriverquery.adapter.SearchAdapter;
+import cn.imrhj.olddriverquery.model.duowan_entity.DetailUserInfo;
 import cn.imrhj.olddriverquery.model.entity.ListUserBase;
 import cn.imrhj.olddriverquery.model.entity.UserBase;
 import cn.imrhj.olddriverquery.model.iface.GameServiceInterface;
@@ -41,11 +42,13 @@ public class SearchPersenter implements ItemClickListener {
     public void searchUserBase(String username) {
         KLog.d(": 开始查找");
         mAdapter.cleanData();
+        mFragment.showLoading();
 
         mGameService.getUserBase(username, new Subscriber<ListUserBase>() {
             @Override
             public void onCompleted() {
 
+                mFragment.hideLoading();
             }
 
             @Override
@@ -66,6 +69,28 @@ public class SearchPersenter implements ItemClickListener {
 
     @Override
     public void onItemClick(View view, int position) {
+        mFragment.showLoading();
         KLog.d(": " + position);
+        ListUserBase userBase = mAdapter.getUser(position);
+        mGameService.getDetailUserInfo(userBase.getArea(), userBase.getName(),
+                new Subscriber<DetailUserInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        KLog.e(": " + e.getMessage());
+                        mFragment.hideLoading();
+                        mFragment.showMessage("无记录");
+                    }
+
+                    @Override
+                    public void onNext(DetailUserInfo userInfo) {
+                        mFragment.hideLoading();
+                        mFragment.turnToDetailInfoFragment(userInfo);
+                    }
+                });
     }
 }
