@@ -2,9 +2,12 @@ package cn.imrhj.olddriverquery.api;
 
 import java.util.List;
 
+import cn.imrhj.olddriverquery.model.entity.AllBase;
 import cn.imrhj.olddriverquery.model.entity.Area;
+import cn.imrhj.olddriverquery.model.entity.CombatBean;
 import cn.imrhj.olddriverquery.model.entity.TokenInfo;
 import cn.imrhj.olddriverquery.model.entity.UserBaseExten;
+import cn.imrhj.olddriverquery.model.entity.UserExtInfo;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -28,4 +31,16 @@ public interface GameService {
     @GET("area")
     Observable<List<Area>> getArea();
 
+    @GET("UserExtInfo")
+    Observable<AllBase<UserExtInfo>> getUserExtInfo(
+            @Header("DAIWAN-API-TOKEN") String token,
+            @Query("qquin") String qquin,
+            @Query("vaid") int vaid);
+
+    @GET("CombatList")
+    Observable<List<CombatBean>> getCombatList(
+            @Header("DAIWAN-API-TOKEN") String token,
+            @Query("qquin") String qquin,
+            @Query("vaid") int vaid,
+            @Query("p") int page);
 }

@@ -2,21 +2,29 @@ package cn.imrhj.olddriverquery.network;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import com.socks.library.KLog;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.imrhj.olddriverquery.App;
+import cn.imrhj.olddriverquery.api.DuowanService;
 import cn.imrhj.olddriverquery.api.GameIconService;
 import cn.imrhj.olddriverquery.api.GameService;
+import cn.imrhj.olddriverquery.model.duowan_entity.DetailUserInfo;
+import cn.imrhj.olddriverquery.model.duowan_entity.Hero;
+import cn.imrhj.olddriverquery.model.duowan_entity.PlayerInfo;
+import cn.imrhj.olddriverquery.model.duowan_entity.Record;
+import cn.imrhj.olddriverquery.model.entity.AllBase;
 import cn.imrhj.olddriverquery.model.entity.Area;
+import cn.imrhj.olddriverquery.model.entity.CombatBean;
 import cn.imrhj.olddriverquery.model.entity.ListUserBase;
 import cn.imrhj.olddriverquery.model.entity.TokenInfo;
 import cn.imrhj.olddriverquery.model.entity.UserBase;
 import cn.imrhj.olddriverquery.model.entity.UserBaseExten;
+import cn.imrhj.olddriverquery.model.entity.UserExtInfo;
 import cn.imrhj.olddriverquery.model.iface.GameServiceInterface;
 import cn.imrhj.olddriverquery.utlis.InfoDeal;
 import okhttp3.OkHttpClient;
@@ -29,8 +37,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func0;
 import rx.functions.Func1;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 /**
@@ -40,18 +48,19 @@ import rx.schedulers.Schedulers;
 public class HttpMethods implements GameServiceInterface {
     public static final String URL = "http://www.games-cube.com/combat/api/";
     public static final String ICON_URL = "http://ossweb-img.qq.com/images/lol/img/";
+    public static final String DUOWAN_URL = "http://API.xunjob.cn/";
 
     private static HttpMethods mInstance;
 
-    private Retrofit retrofit;
     private GameService gameService;
-    private List<Area> mAreaLists;
-    private Retrofit iconRetrofit;
     private GameIconService gameIconService;
+    private DuowanService duowanService;
+    private List<Area> mAreaLists;
 
 
     /**
      * 获取单例,这里使用了DCL方法防止出现单例失效问题
+     *
      * @return this
      */
     public static HttpMethods getInstance() {
@@ -66,7 +75,7 @@ public class HttpMethods implements GameServiceInterface {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -75,12 +84,20 @@ public class HttpMethods implements GameServiceInterface {
         gameService = retrofit.create(GameService.class);
         KLog.d(": initHttpMethods");
 
-        iconRetrofit = new Retrofit.Builder()
+        Retrofit iconRetrofit = new Retrofit.Builder()
                 .baseUrl(ICON_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         gameIconService = iconRetrofit.create(GameIconService.class);
+
+        Retrofit duowanRetrofit = new Retrofit.Builder()
+                .baseUrl(DUOWAN_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+        duowanService = duowanRetrofit.create(DuowanService.class);
 
 
         getToken();
@@ -111,6 +128,7 @@ public class HttpMethods implements GameServiceInterface {
 
     /**
      * 获取Token
+     *
      * @param subscriber
      */
     public void getToken(Subscriber<TokenInfo> subscriber) {
@@ -123,15 +141,16 @@ public class HttpMethods implements GameServiceInterface {
 
     /**
      * 获取用户列表
-     * @param username  指定用户名
-     * @param subscriber  回调函数
+     *
+     * @param username   指定用户名
+     * @param subscriber 回调函数
      */
     @Override
     public void getUserBase(final String username, Subscriber<ListUserBase> subscriber) {
         Observable<UserBaseExten> observable = null;
 
         if (App.token != null) {
-            observable =  gameService.getUserBase(App.token, username)
+            observable = gameService.getUserBase(App.token, username)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
 
@@ -162,10 +181,14 @@ public class HttpMethods implements GameServiceInterface {
         }).map(new Func1<List<UserBase>, List<ListUserBase>>() {
             @Override
             public List<ListUserBase> call(List<UserBase> userBases) {
+                Collections.sort(userBases);
                 List<ListUserBase> listUserBases = new ArrayList<ListUserBase>();
                 for (UserBase userBase : userBases) {
                     ListUserBase listUserBase = new ListUserBase(
+                            userBase.getName(),
                             userBase.getIcon_id(),
+                            userBase.getArea_id(),
+                            userBase.getQquin(),
                             userBase.getName() + " - Lv" + userBase.getLevel(),
                             getArea(userBase.getArea_id()),
                             InfoDeal.getTier(userBase.getTier(), userBase.getQueue()));
@@ -184,13 +207,14 @@ public class HttpMethods implements GameServiceInterface {
 
     /**
      * 获取大区名
+     *
      * @param areaId
      * @return
      */
     private String getArea(int areaId) {
         for (Area area : mAreaLists) {
             if (areaId == area.getId()) {
-                return area.getIsp() + ":" + area.getName();
+                return area.getName();
             }
         }
 
@@ -268,6 +292,9 @@ public class HttpMethods implements GameServiceInterface {
 
     @Override
     public void getUserIcon(int iconId, Subscriber<Bitmap> subscriber) {
+        if (iconId > 28) {
+            return;
+        }
         gameIconService.getPlayerIcon(iconId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -281,5 +308,81 @@ public class HttpMethods implements GameServiceInterface {
                 .subscribe(subscriber);
     }
 
+    @Override
+    public void getExtInfo(String qquin, int vaid) {
+        gameService.getUserExtInfo(App.token, qquin, vaid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<AllBase<UserExtInfo>, UserExtInfo>() {
+                    @Override
+                    public UserExtInfo call(AllBase<UserExtInfo> userExtInfoAllBase) {
+                        return userExtInfoAllBase.getData();
+                    }
+                })
+                .subscribe(new Subscriber<UserExtInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(UserExtInfo userExtInfo) {
+//                        KLog.d(": " + userExtInfo.getItems().size());
+
+                    }
+                });
+    }
+
+    @Override
+    public void getCombatList(String qquin, int vaid, int p) {
+        gameService.getCombatList(App.token, qquin, vaid, p)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<CombatBean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CombatBean> combatBeen) {
+                        KLog.d(": " + combatBeen.size());
+                    }
+                });
+    }
+
+    @Override
+    public void getDetailUserInfo(String serverName, String playerName, Action1<DetailUserInfo> action1) {
+        Observable<PlayerInfo> playerInfoObservable = duowanService.getPlayerInfo(serverName, playerName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        Observable<Record> recordObservable = duowanService.getRecord(serverName, playerName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        Observable<Hero> heroObservable = duowanService.getHero(serverName, playerName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        Observable.zip(playerInfoObservable, recordObservable, heroObservable,
+                new Func3<PlayerInfo, Record, Hero, DetailUserInfo>() {
+            @Override
+            public DetailUserInfo call(PlayerInfo playerInfo, Record record, Hero hero) {
+                return new DetailUserInfo(playerInfo, record, hero);
+            }
+        }).subscribe(action1);
+    }
+
+
 
 }
+

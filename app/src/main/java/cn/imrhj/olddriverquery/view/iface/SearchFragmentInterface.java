@@ -7,4 +7,8 @@ import cn.imrhj.olddriverquery.adapter.SearchAdapter;
  */
 public interface SearchFragmentInterface extends BaseInterface{
     void setAdapter(SearchAdapter adapter);
+
+    void showLoading();
+
+    void hideLoading();
 }

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import java.util.List;
 
+import cn.imrhj.olddriverquery.model.duowan_entity.DetailUserInfo;
 import cn.imrhj.olddriverquery.model.entity.ListUserBase;
 import cn.imrhj.olddriverquery.model.entity.TokenInfo;
 import cn.imrhj.olddriverquery.model.entity.UserBase;
@@ -28,4 +29,10 @@ public interface GameServiceInterface {
 
 
     void getUserIcon(int iconId, Subscriber<Bitmap> subscriber);
+
+    void getExtInfo(String qquin, int vaid);
+
+    void getCombatList(String qquin, int vaid, int p);
+
+    void getDetailUserInfo(String serverName, String playerName, Action1<DetailUserInfo> action1);
 }
