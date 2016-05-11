@@ -33,6 +33,7 @@ public class BattleFragment extends BaseFragment {
         rvFragmentBattle.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFragmentBattle.setAdapter(new BattleAdapter(getActivity()));
 
+
     }
 
 }

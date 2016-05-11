@@ -362,13 +362,33 @@ public class HttpMethods implements GameServiceInterface {
     }
 
     @Override
-    public void getDetailUserInfo(String serverName, String playerName, Action1<DetailUserInfo> action1) {
+    public void getDetailUserInfo(String serverName, String playerName, Subscriber<DetailUserInfo> subscriber) {
         Observable<PlayerInfo> playerInfoObservable = duowanService.getPlayerInfo(serverName, playerName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
         Observable<Record> recordObservable = duowanService.getRecord(serverName, playerName)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Record, Record>() {
+                    @Override
+                    public Record call(Record record) {
+                        KLog.e(": " + record.getRecord());
+
+
+                        StringBuffer buffer = new StringBuffer();
+                        String string = record.getRecord();
+                        int length = string.length();
+                        int pos;
+                        while((pos = string.indexOf("%）")) > 0) {
+                            buffer.append(string.substring(0, pos + 2));
+                            buffer.append("\n");
+                            string = string.substring(pos + 2, string.length());
+                        }
+                        buffer.append(string);
+                        record.setRecord(buffer.toString());
+                        return record;
+                    }
+                });
         Observable<Hero> heroObservable = duowanService.getHero(serverName, playerName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -379,7 +399,7 @@ public class HttpMethods implements GameServiceInterface {
             public DetailUserInfo call(PlayerInfo playerInfo, Record record, Hero hero) {
                 return new DetailUserInfo(playerInfo, record, hero);
             }
-        }).subscribe(action1);
+        }).subscribe(subscriber);
     }
 
 

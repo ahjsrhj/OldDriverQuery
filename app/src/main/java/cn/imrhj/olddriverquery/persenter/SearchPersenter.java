@@ -69,15 +69,28 @@ public class SearchPersenter implements ItemClickListener {
 
     @Override
     public void onItemClick(View view, int position) {
+        mFragment.showLoading();
         KLog.d(": " + position);
         ListUserBase userBase = mAdapter.getUser(position);
-        mGameService.getDetailUserInfo(userBase.getArea(), userBase.getName(), new Action1<DetailUserInfo>() {
-            @Override
-            public void call(DetailUserInfo detailUserInfo) {
-                KLog.d(": " + detailUserInfo.toString());
-            }
-        });
+        mGameService.getDetailUserInfo(userBase.getArea(), userBase.getName(),
+                new Subscriber<DetailUserInfo>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        KLog.e(": " + e.getMessage());
+                        mFragment.hideLoading();
+                        mFragment.showMessage("无记录");
+                    }
+
+                    @Override
+                    public void onNext(DetailUserInfo userInfo) {
+                        mFragment.hideLoading();
+                        mFragment.turnToDetailInfoFragment(userInfo);
+                    }
+                });
     }
 }

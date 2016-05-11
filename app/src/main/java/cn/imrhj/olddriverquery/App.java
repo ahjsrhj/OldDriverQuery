@@ -3,6 +3,8 @@ package cn.imrhj.olddriverquery;
 import android.app.Application;
 import android.content.Context;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.socks.library.KLog;
 
 import butterknife.ButterKnife;
@@ -27,5 +29,9 @@ public class App extends Application {
         KLog.init(BuildConfig.LOG_DEBUG);
         ButterKnife.setDebug(BuildConfig.LOG_DEBUG);
         mContext = getApplicationContext();
+
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this) .build();
+        ImageLoader.getInstance().init(configuration);
+
     }
 }

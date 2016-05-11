@@ -34,5 +34,6 @@ public interface GameServiceInterface {
 
     void getCombatList(String qquin, int vaid, int p);
 
-    void getDetailUserInfo(String serverName, String playerName, Action1<DetailUserInfo> action1);
+
+    void getDetailUserInfo(String serverName, String playerName, Subscriber<DetailUserInfo> subscriber);
 }

@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import cn.imrhj.olddriverquery.R;
 import cn.imrhj.olddriverquery.adapter.SearchAdapter;
 import cn.imrhj.olddriverquery.base.BaseFragment;
+import cn.imrhj.olddriverquery.model.duowan_entity.DetailUserInfo;
 import cn.imrhj.olddriverquery.persenter.SearchPersenter;
 import cn.imrhj.olddriverquery.view.iface.SearchFragmentInterface;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
@@ -110,6 +111,16 @@ public class SearchFragment extends BaseFragment implements SearchFragmentInterf
         if (!mGifLoadingView.isVisible()) {
             mGifLoadingView.dismiss();
         }
+    }
+
+    @Override
+    public void turnToDetailInfoFragment(DetailUserInfo userInfo) {
+        DetailInfoFragment detailInfoFragment = new DetailInfoFragment();
+        detailInfoFragment.setDetailUserInfo(userInfo);
+        this.getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_fragment, detailInfoFragment)
+                .commit();
     }
 
 }
