@@ -25,10 +25,10 @@ public class InfoDeal {
                 sTier = "黄金";
                 break;
             case 2:
-                sTier = "钻石";
+                sTier = "铂金";
                 break;
             case 1:
-                sTier = "大师";
+                sTier = "钻石";
                 break;
             case 0:
                 sTier = "王者";

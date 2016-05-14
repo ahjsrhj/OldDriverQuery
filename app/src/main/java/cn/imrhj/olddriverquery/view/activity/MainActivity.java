@@ -98,6 +98,8 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (getFragmentManager().popBackStackImmediate()) {
+            getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }

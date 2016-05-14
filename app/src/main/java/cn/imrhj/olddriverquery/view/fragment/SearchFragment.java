@@ -120,6 +120,7 @@ public class SearchFragment extends BaseFragment implements SearchFragmentInterf
         this.getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_fragment, detailInfoFragment)
+                .addToBackStack(null)
                 .commit();
     }
 

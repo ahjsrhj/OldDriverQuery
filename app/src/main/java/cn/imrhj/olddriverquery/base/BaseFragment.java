@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragment extends Fragment {
 
-    private View mLayoutView;
+    protected View mLayoutView;
 
     /**
      * 初始化布局
@@ -46,6 +46,7 @@ public abstract class BaseFragment extends Fragment {
     private View getCreateView(LayoutInflater inflater, ViewGroup container) {
         return inflater.inflate(getLayoutRes(), container, false);
     }
+
 
 
 

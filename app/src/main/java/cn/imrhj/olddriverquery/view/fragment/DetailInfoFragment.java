@@ -1,6 +1,9 @@
 package cn.imrhj.olddriverquery.view.fragment;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.meetic.marypopup.MaryPopup;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
@@ -34,6 +38,8 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
  * Created by rhj on 16/5/11.
  */
 public class DetailInfoFragment extends BaseFragment implements View.OnClickListener {
+
+    boolean isStar = false;
 
     @BindView(R.id.iv_detail_fragment_avatar)
     RoundedImageView ivDetailFragmentAvatar;
@@ -98,7 +104,48 @@ public class DetailInfoFragment extends BaseFragment implements View.OnClickList
     }
 
     @Override
-    public void onClick(View v) {
-        v.setBackground(getResources().getDrawable(R.drawable.ic_star));
+    public void onClick(final View v) {
+        MaryPopup maryPopup = MaryPopup.with(getActivity())
+                .cancellable(true)
+                .blackOverlayColor(Color.parseColor("#DD444444"))
+                .backgroundColor(Color.parseColor("#EFF4F5"))
+                .content(R.layout.card_view_battle_fragment)
+                .from(mLayoutView);
+        maryPopup.show();
+
+        ObjectAnimator animator = ObjectAnimator.ofFloat(v, "rotationY", 0.0f, 180F);
+        animator.setDuration(300);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (isStar) {
+                    v.setBackground(getResources().getDrawable(R.drawable.ic_star_border));
+                } else {
+                    v.setBackground(getResources().getDrawable(R.drawable.ic_star));
+                }
+                isStar = !isStar;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.start();
+
+
+
     }
+
+
 }
+
