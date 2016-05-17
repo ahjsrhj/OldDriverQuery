@@ -1,5 +1,7 @@
 package cn.imrhj.olddriverquery.utlis;
 
+import com.socks.library.KLog;
+
 /**
  * Created by rhj on 16/5/9.
  */
@@ -13,8 +15,12 @@ public class InfoDeal {
     public static String getTier(int  tier, int queue) {
         String sTier;
         String sQueue;
+        KLog.d(": " + tier + " : " + queue);
 
         switch (tier) {
+            case 6:
+                sTier = "大师";
+                break;
             case 5:
                 sTier = "青铜";
                 break;
