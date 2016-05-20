@@ -47,7 +47,6 @@ public class SearchPersenter implements ItemClickListener {
         mGameService.getUserBase(username, new Subscriber<ListUserBase>() {
             @Override
             public void onCompleted() {
-
                 mFragment.hideLoading();
             }
 

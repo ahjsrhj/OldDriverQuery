@@ -110,7 +110,8 @@ public class DetailInfoFragment extends BaseFragment implements View.OnClickList
                 .blackOverlayColor(Color.parseColor("#DD444444"))
                 .backgroundColor(Color.parseColor("#EFF4F5"))
                 .content(R.layout.card_view_battle_fragment)
-                .from(mLayoutView);
+                .center(true)
+                .from(v);
         maryPopup.show();
 
         ObjectAnimator animator = ObjectAnimator.ofFloat(v, "rotationY", 0.0f, 180F);
